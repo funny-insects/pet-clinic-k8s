@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+#specify api version, maybe tie to sha later?
+kind: Deployment
+#deployment resource
+metadata:
+  #specify name, namespace and labels
+  name: nexus
+  namespace: bootcamp
+  labels:
+    app: nexus
+spec:
+  #deployment spec
+  #specify replicas, define selector to to match for label "app: nexus"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+  #pod template
+    metadata:
+      labels:
+        app: nexus
+        #match deployment selector label
+    spec:
+    #pod spec describe what containers in pod
+      containers:
+      - name: nexus
+      # nexus is just gonna run a official nexus image
+        image: sonatype/nexus3:latest
+        #maybe tag to sha
+        imagePullPolicy: IfNotPresent
+        #only pull if dont alrdy have
+        ports:
+        - containerPort: 8081
+        #expose port 8081 for nexus on http
+          name: http
+          protocol: TCP
+        resources:
+        #resource requests and limits for the container
+          requests:
+            memory: "2Gi"
+            cpu: "1"
+          limits:
+            memory: "3Gi"
+            cpu: "2"

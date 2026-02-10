@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+# specify api for deployment object
+kind: Deployment
+# decalre that its a deployment resource??? 
+#what that mean?
+metadata:
+# this is a metadata section, specifies replica set and pods
+  name: gha-runner
+  #reference the name with kubectl get deployment gha-runner
+  namespace: bootcamp
+  #isolate from other workloads with a namespace
+  labels:
+    app: gha-runner
+spec:
+  #deployment spec
+  #define what the deployment should create
+  replicas: 1
+  #create 1 replica(pod)
+  selector:
+    matchLabels:
+      app: gha-runner
+  #selector must match the label of gha runner
+  template:
+  #template descraibes what pods created by this deployment should look like 
+    metadata:
+      labels:
+        app: gha-runner
+        #labels must match the selector
+    spec:
+    #pod spec
+      containers:
+      #defines the containers in the pod
+      - name: gha-runner
+      #name container
+        image: gha-runner:v1.0
+        #use docker image built from pipeline
+        #when you run the build job, builds, pushes to local, then we use it
+        imagePullPolicy: IfNotPresent
+        #only pull if it doesnt exist alrdy
+        env:
+        #environment variables
+        - name: GITHUB_URL
+          value: "https://github.com/abreiss/kube-spring-petclinic"  # CHANGE THIS
+        - name: RUNNER_TOKEN
+          value: "AK4PAOMVEYMYHTGNC3YB6P3JRKCVI" 
+        - name: RUNNER_NAME
+          value: "kind-bootcamp-runner"
+        - name: RUNNER_LABELS
+          value: "self-hosted,linux,arm64"
+          #matches self hosted and linux arm64 from maven.build.yml
+        - name: RUNNER_WORKDIR
+          value: "_work"
+        resources:
+        #resource requests and limits for the container
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
