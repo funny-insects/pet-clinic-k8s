@@ -42,7 +42,10 @@ spec:
         - name: GITHUB_URL
           value: "https://github.com/abreiss/kube-spring-petclinic"  # CHANGE THIS
         - name: RUNNER_TOKEN
-          value: "AK4PAOMVEYMYHTGNC3YB6P3JRKCVI" 
+          valueFrom:
+            secretKeyRef:
+              name: gha-runner-secret
+              key: runner-token 
         - name: RUNNER_NAME
           value: "kind-bootcamp-runner"
         - name: RUNNER_LABELS
