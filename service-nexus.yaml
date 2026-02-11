@@ -1,12 +1,18 @@
 apiVersion: v1
+#choose core api kube version
 kind: Service
+#this is a service resource
 metadata:
+  #name, namespace and nexus label
   name: nexus
   namespace: bootcamp
   labels:
     app: nexus
 spec:
+  #service spec
   type: ClusterIP
+  #expose service on a cluster-internal IP
+  #so pods in the cluster can reach nexus:8081
   selector:
     app: nexus
   ports:
