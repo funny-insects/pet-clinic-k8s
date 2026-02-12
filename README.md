@@ -27,6 +27,10 @@ kubectl apply -f <manifest.yaml>
 kubectl port-forward -n bootcamp svc/nexus 8081:8081
 ```
 
+```bash
+kubectl exec -n bootcamp $(kubectl get pods -n bootcamp -l app=nexus -o jsonpath='{.items[0].metadata.name}') -- cat /nexus-data/admin.password
+```
+
 ## Useful commands for debuging
 List images in Kind  cluster
 ```bash
