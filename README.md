@@ -66,9 +66,9 @@ kubectl get secret runner-secret -n bootcamp -o jsonpath='{.data.GITHUB_URL}' | 
 ```
 
 ```bash
-kubectl logs -n bootcamp runner-deployment-5576dbb989-t7kls --tail=50
+kubectl logs -n bootcamp <pod_name> --tail=50
 ```
 
 ```bash
-kubectl describe pod -n bootcamp runner-deployment-5cd789ff5-nwz52
+kubectl describe pod -n bootcamp <pod_name>
 ```
