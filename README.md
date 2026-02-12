@@ -23,6 +23,10 @@ kubectl -n bootcamp create secret generic runner-secret --from-literal=GITHUB_UR
 kubectl apply -f <manifest.yaml>
 ```
 
+```bash
+kubectl port-forward -n bootcamp svc/nexus 8081:8081
+```
+
 ## Useful commands for debuging
 List images in Kind  cluster
 ```bash
