@@ -80,3 +80,7 @@ kubectl logs -n bootcamp <pod_name> --tail=50
 ```bash
 kubectl describe pod -n bootcamp <pod_name>
 ```
+
+```bash
+kubectl get services [-n <namespace>]
+```
