@@ -1,3 +1,4 @@
+# This is the storage resource for the cluster
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -7,23 +8,27 @@ spec:
     storage: 2Gi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
+    - ReadWriteOnce # Volumes can be mounted as r/w by a single node at a time
+  # When the PVC is deleted, the PV and its data are kept (not automatically deleted)
+  persistentVolumeReclaimPolicy: Retain 
+  # Tags this PV so it can be matched with PVCs requesting the same class
   storageClassName: nexus-local
   hostPath:
-    path: /mnt/data/nexus
-    type: DirectoryOrCreate
+    path: /mnt/nexus-data # Path inside node
+    type: DirectoryOrCreate    # Create the directory if it doen't exist
 
 ---
+# This is how the app requests stortge from the PV
+# The Nexus pod will mount this to acces the storage
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nexus-data
+  name: nexus-data # Name that pods will reference
   namespace: bootcamp
 spec:
   accessModes:
-    - ReadWriteOnce
-  storageClassName: nexus-local
+    - ReadWriteOnce # Must match the PV's access mode
+  storageClassName: nexus-local # Matches the one in the PV
   resources:
     requests:
-      storage: 2Gi
+      storage: 2Gi # Must be less <= PV capacity
