@@ -1,63 +1,43 @@
-apiVersion: apps/v1
-# specify api for deployment object
-kind: Deployment
-# decalre that its a deployment resource??? 
-#what that mean?
+apiVersion: apps/v1 # API-group/version-of-api
+# Deployment lives in apps/v1
+# Deployment Manages a set of identical Pods
+# Ensures a desired number of replicas
+# Supports rolling updates and rollbacks
+kind: Deployment # This specificies the resource type (It had nothing to do with KinD!)
 metadata:
-# this is a metadata section, specifies replica set and pods
-  name: gha-runner
-  #reference the name with kubectl get deployment gha-runner
+  name: runner-deployment # name of Deployment within the namespace
   namespace: bootcamp
-  #isolate from other workloads with a namespace
+  # Key/value metadata attached to the Deployment
+  # Used for: organization selection and automation
+  # Not used for anything in this instance
   labels:
-    app: gha-runner
+    app: runner
 spec:
-  #deployment spec
-  #define what the deployment should create
+  # Number of pods
   replicas: 1
-  #create 1 replica(pod)
+  # Tell deployment which pods it owns
   selector:
     matchLabels:
-      app: gha-runner
-  #selector must match the label of gha runner
+      app: runner
+  # Every replica in this deployment will be based on this template
   template:
-  #template descraibes what pods created by this deployment should look like 
     metadata:
       labels:
-        app: gha-runner
-        #labels must match the selector
+        app: runner
     spec:
-    #pod spec
       containers:
-      #defines the containers in the pod
-      - name: gha-runner
-      #name container
-        image: gha-runner:v1.0
-        #use docker image built from pipeline
-        #when you run the build job, builds, pushes to local, then we use it
-        imagePullPolicy: IfNotPresent
-        #only pull if it doesnt exist alrdy
-        env:
-        #environment variables
-        - name: GITHUB_URL
-          value: "https://github.com/abreiss/kube-spring-petclinic"  # CHANGE THIS
-        - name: RUNNER_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: gha-runner-secret
-              key: runner-token 
-        - name: RUNNER_NAME
-          value: "kind-bootcamp-runner"
-        - name: RUNNER_LABELS
-          value: "self-hosted,linux,arm64"
-          #matches self hosted and linux arm64 from maven.build.yml
-        - name: RUNNER_WORKDIR
-          value: "_work"
-        resources:
-        #resource requests and limits for the container
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
+        - name: runner
+          #image: real-spring-petclinic-piepline-runner:latest
+          image: docker.io/library/real-spring-petclinic-piepline-runner:latest
+          imagePullPolicy: Never
+          env:
+            - name: RUNNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: runner-secret
+                  key: RUNNER_TOKEN
+            - name: GITHUB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: runner-secret
+                  key: GITHUB_URL
